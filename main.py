@@ -273,7 +273,11 @@ Use numbered headings, ≤4-column tables, concrete KPIs, and Word-friendly form
 """
     with st.spinner("Generating draft with Gemini…"):
         final_text = gemini(final_prompt)
+
     st.download_button("⬇️ Download (txt)", final_text, file_name="Requirements.txt")
     st.success("Draft generated!")
     st.subheader("📄 Draft")
-    st.markdown(final_text)
+
+    # 💡 Geçici olarak markdown yerine düz metinle gösteriyoruz
+    st.text(final_text)  # markdown patlatıyorsa geçici çözüm
+
