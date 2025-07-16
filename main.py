@@ -11,12 +11,10 @@ import base64
 import html
 import re
 
-def sanitize_regex(text):
-    # JS tarafında sorun çıkaran lookaround ifadelerini kaldır
-    text = re.sub(r"\(\?<=[^)]*\)", "[unsupported-lookbehind]", text)
-    text = re.sub(r"\(\?<![^)]*\)", "[unsupported-negative-lookbehind]", text)
-    text = re.sub(r"\(\?=[^)]*\)", "[lookahead]", text)
-    return text
+def clean_regex(text):
+    """Remove problematic regex-like patterns that break frontend rendering."""
+    return re.sub(r"\(\?<[^>]*>", "", text)
+
 
 
 # ── API / environment ─────────────────────────────────────────────
@@ -286,20 +284,13 @@ Use numbered headings, ≤4-column tables, concrete KPIs, and Word-friendly form
     with st.spinner("Generating draft with Gemini…"):
         raw_text = gemini(final_prompt)
 
-    # Regex hatalarını önle
-    final_text = sanitize_regex(raw_text)
-
-    # HTML karakterlerini güvenli hâle getir
+    # Temizle, escape et
+    final_text = clean_regex(raw_text)
     safe_text = html.escape(final_text)
 
-
-    # İndirme butonu
     st.success("Draft generated!")
     st.download_button("⬇️ Download (txt)", final_text, file_name="Requirements.txt")
-
-    # Alt başlık
     st.subheader("📄 Draft")
 
-    # Güvenli şekilde göster
     with st.expander("📄 View Draft"):
         st.code(safe_text, language="markdown")
