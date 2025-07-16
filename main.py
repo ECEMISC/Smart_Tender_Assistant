@@ -8,7 +8,7 @@ import requests
 import streamlit as st
 from PyPDF2 import PdfReader
 import base64
-import html 
+import html
 
 # ── API / environment ─────────────────────────────────────────────
 
@@ -237,6 +237,7 @@ else:
 
 if st.button("📄 Generate Final Requirements & Specifications") and (answers_t or answers_s):
     pdf_text = "".join(pdf_to_text(p) for p in pdf_files) if pdf_files else ""
+
     final_prompt = f"""
 You are a senior tender documentation officer at Dublin City Council.
 
@@ -272,14 +273,14 @@ If table cell text exceeds width, use superscript¹ and add “Table Notes:” b
 Use numbered headings, ≤4-column tables, concrete KPIs, and Word-friendly formatting. Do **NOT** output any questions.
 """
 
-with st.spinner("Generating draft with Gemini…"):
-    final_text = gemini(final_prompt)  # ✅ bu satır girintili olmalı
+    with st.spinner("Generating draft with Gemini…"):
+        final_text = gemini(final_prompt)
 
-safe_text = html.escape(final_text)  # 🛡️ Regex hatasını önlemek için escape ediyoruz
+    safe_text = html.escape(final_text)
 
-st.download_button("⬇️ Download (txt)", final_text, file_name="Requirements.txt")
-st.success("Draft generated!")
-st.subheader("📄 Draft")
+    st.success("Draft generated!")
+    st.download_button("⬇️ Download (txt)", final_text, file_name="Requirements.txt")
+    st.subheader("📄 Draft")
 
-with st.expander("📄 View Draft"):
-    st.markdown(f"<pre>{safe_text}</pre>", unsafe_allow_html=True)
+    with st.expander("📄 View Draft"):
+        st.markdown(f"<pre>{safe_text}</pre>", unsafe_allow_html=True)
