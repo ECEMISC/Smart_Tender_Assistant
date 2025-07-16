@@ -273,14 +273,16 @@ If table cell text exceeds width, use superscript¹ and add “Table Notes:” b
 Use numbered headings, ≤4-column tables, concrete KPIs, and Word-friendly formatting. Do **NOT** output any questions.
 """
 
-    with st.spinner("Generating draft with Gemini…"):
-        final_text = gemini(final_prompt)
+with st.spinner("Generating draft with Gemini…"):
+    final_text = gemini(final_prompt)
 
-    safe_text = html.escape(final_text)
+safe_text = html.escape(final_text)
 
-    st.success("Draft generated!")
-    st.download_button("⬇️ Download (txt)", final_text, file_name="Requirements.txt")
-    st.subheader("📄 Draft")
+st.success("Draft generated!")
+st.download_button("⬇️ Download (txt)", final_text, file_name="Requirements.txt")
+st.subheader("📄 Draft")
 
-    with st.expander("📄 View Draft"):
-        st.markdown(f"<pre>{safe_text}</pre>", unsafe_allow_html=True)
+with st.expander("📄 View Draft"):
+    st.code(safe_text, language="markdown")
+
+
