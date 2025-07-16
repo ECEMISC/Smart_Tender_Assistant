@@ -8,7 +8,7 @@ import requests
 import streamlit as st
 from PyPDF2 import PdfReader
 import base64
-
+import html 
 
 # ── API / environment ─────────────────────────────────────────────
 
@@ -271,11 +271,15 @@ If table cell text exceeds width, use superscript¹ and add “Table Notes:” b
 
 Use numbered headings, ≤4-column tables, concrete KPIs, and Word-friendly formatting. Do **NOT** output any questions.
 """
-    with st.spinner("Generating draft with Gemini…"):
-        final_text = gemini(final_prompt)
-    st.download_button("⬇️ Download (txt)", final_text, file_name="Requirements.txt")
-    st.success("Draft generated!")
-    st.subheader("📄 Draft")
-    with st.expander("📄 View Draft"):
-        st.code(final_text, language="markdown")  # Markdown değil, sadece kod bloğu gibi
 
+with st.spinner("Generating draft with Gemini…"):
+    final_text = gemini(final_prompt)  # ✅ bu satır girintili olmalı
+
+safe_text = html.escape(final_text)  # 🛡️ Regex hatasını önlemek için escape ediyoruz
+
+st.download_button("⬇️ Download (txt)", final_text, file_name="Requirements.txt")
+st.success("Draft generated!")
+st.subheader("📄 Draft")
+
+with st.expander("📄 View Draft"):
+    st.markdown(f"<pre>{safe_text}</pre>", unsafe_allow_html=True)
