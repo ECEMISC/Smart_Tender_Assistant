@@ -1,5 +1,5 @@
 # app.py — Streamlit Tender Assistant (rev. Jul‑2025 v10‑final)
-#BU SON
+
 import os
 from urllib.parse import urlparse
 import bs4
@@ -9,6 +9,15 @@ import streamlit as st
 from PyPDF2 import PdfReader
 import base64
 import html
+import re
+
+def sanitize_regex(text):
+    # JS tarafında sorun çıkaran lookaround ifadelerini kaldır
+    text = re.sub(r"\(\?<=[^)]*\)", "[unsupported-lookbehind]", text)
+    text = re.sub(r"\(\?<![^)]*\)", "[unsupported-negative-lookbehind]", text)
+    text = re.sub(r"\(\?=[^)]*\)", "[lookahead]", text)
+    return text
+
 
 # ── API / environment ─────────────────────────────────────────────
 
@@ -275,10 +284,14 @@ Use numbered headings, ≤4-column tables, concrete KPIs, and Word-friendly form
 
     # Gemini'den çıktıyı al
     with st.spinner("Generating draft with Gemini…"):
-        final_text = gemini(final_prompt)
+        raw_text = gemini(final_prompt)
+
+    # Regex hatalarını önle
+    final_text = sanitize_regex(raw_text)
 
     # HTML karakterlerini güvenli hâle getir
     safe_text = html.escape(final_text)
+
 
     # İndirme butonu
     st.success("Draft generated!")
