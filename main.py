@@ -1,5 +1,5 @@
 # app.py — Streamlit Tender Assistant (rev. Jul‑2025 v10‑final)
-
+#BU SON
 import os
 from urllib.parse import urlparse
 import bs4
@@ -273,13 +273,20 @@ If table cell text exceeds width, use superscript¹ and add “Table Notes:” b
 Use numbered headings, ≤4-column tables, concrete KPIs, and Word-friendly formatting. Do **NOT** output any questions.
 """
 
+    # Gemini'den çıktıyı al
     with st.spinner("Generating draft with Gemini…"):
         final_text = gemini(final_prompt)
 
+    # HTML karakterlerini güvenli hâle getir
+    safe_text = html.escape(final_text)
+
+    # İndirme butonu
     st.success("Draft generated!")
     st.download_button("⬇️ Download (txt)", final_text, file_name="Requirements.txt")
 
+    # Alt başlık
     st.subheader("📄 Draft")
-    with st.expander("📄 View Draft"):
-        st.text_area("Generated Output", final_text, height=500)
 
+    # Güvenli şekilde göster
+    with st.expander("📄 View Draft"):
+        st.code(safe_text, language="markdown")
