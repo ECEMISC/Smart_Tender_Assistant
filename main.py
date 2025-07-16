@@ -276,4 +276,6 @@ Use numbered headings, ≤4-column tables, concrete KPIs, and Word-friendly form
     st.download_button("⬇️ Download (txt)", final_text, file_name="Requirements.txt")
     st.success("Draft generated!")
     st.subheader("📄 Draft")
-    st.markdown(final_text)
+    with st.expander("📄 View Draft"):
+        st.code(final_text, language="markdown")  # Markdown değil, sadece kod bloğu gibi
+
