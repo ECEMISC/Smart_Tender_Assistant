@@ -115,7 +115,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-product = st.text_input("", placeholder="electric vehicle charging station")
+product = st.text_input("Product Name", placeholder="electric vehicle charging station", label_visibility="collapsed")
 st.markdown("</div>", unsafe_allow_html=True)
 
 results_per_query = st.slider("**Results Per Query**", 1, 10, 3)
